@@ -37,11 +37,11 @@
             playerCharacter.moveAll(getDirection(),playerCharacter.speed);
             //this is for collishion
             obsticals.forEach(element => {
-                console.log("is collishion regestering");
+                //console.log("is collishion regestering");
                 if(playerCharacter.colishion(element)){
-                console.log("moving");
-                //console.log(playerCharacter);
-                playerCharacter.moveAll(getDirection(),-1*playerCharacter.speed);
+                    //console.log("moving");
+                    //console.log(playerCharacter);
+                    playerCharacter.moveAll(getDirection(),-1*playerCharacter.speed);
             }
             });
             playerCharacter.update();
@@ -160,7 +160,7 @@
                     target = true;
                 }
             }
-            console.log(target);
+           // console.log(target);
             return target;
         }
         //move all the points in together
@@ -216,8 +216,8 @@
             ctx = gameboard.context;
             objects.update();
             var target = false;
-            for(let i = 0; i<this.points.length;i+=2){
-                if(ctx.isPointInPath(this.points[i],this.points[i+1])){
+            for(let i = 0; i<this.points.length;i++){
+                if(ctx.isPointInPath(this.points[i][0],this.points[i][1])){
                     target = true;
                 }
             }
@@ -252,3 +252,9 @@
         for(let i = 1; i<points.length; i++){
             ctx.lineTo(points[i][0],points[i][1]);
         }
+        ctx.fill();
+    }
+
+</script>
+</body>
+</html>
