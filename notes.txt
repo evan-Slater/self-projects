@@ -1,0 +1,94 @@
+to set up a new json file
+npm init
+-----------------------
+to open an html file using electron
+
+//required imports
+const electron = require('electron');
+const url = require('url');
+const path = require('path');
+const { app, BrowserWindow, ipcMain } = electron;
+
+//creation of it
+app.on('ready', function () {
+    // create new window 
+    win = new BrowserWindow({
+        // this line lets you uses  electron functions in the html file 
+        webPreferences: { nodeIntegration: true }
+    });
+    //load html file
+    win.loadURL(url.format({
+        // dirname == this file
+        pathname: path.join(__dirname, 'mainWindow.html'),
+        protocal: 'File:',
+        slashes: true
+    }));
+    // quit app when main window is closed 
+    win.on('closed', function () {
+        app.quit();
+    });
+});
+--------------------------------------------------------------------------------------
+
+in html use this to send
+---------------------------------------------------------------------------------------------------
+                // this is set up
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+                // gets information in the form and when a submit type happens runs a function
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+                // this will get a value from a specifyed place then send it 
+        function submitForm(e){
+            e.preventDefault();
+            const item (this is where you up the name in) = document.querySelector('# id of thing').value (this is spesifying what you are getting);
+                        // this is the sender
+                        //first part is what it is named,, second part is what is being send
+            ipcRenderer.send('item:add', item);
+        }
+---------------------------------------------------------------------------------------
+in ts/js file use this to reseeve
+-----------------------------------------------------------------------------------------
+        // the item in the function is what you named it 
+ipcMain.on('item:add', function(event, item){
+//do what you want with 'item' here 
+})
+----------------------------------------
+to send from ts/js to html
+--------------------------
+(html file name).webContents.send('item:clear', (what you are sending))
+---------------------------------------
+html file reseeve
+-------------------------------------------
+ipcRenderer.on('item:clear', function(e, item){
+-------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+easayer way to do it
+------------------------------------------------------------
+// In main process.
+const { ipcMain } = require('electron')
+ipcMain.on('asynchronous-message', (event, arg) => {
+  console.log(arg) // prints "ping"
+  event.reply('asynchronous-reply', 'pong')
+})
+
+ipcMain.on('synchronous-message', (event, arg) => {
+  console.log(arg) // prints "ping"
+  event.returnValue = 'pong'
+})
+------------------------------------------------------------
+// In renderer process (web page).
+const { ipcRenderer } = require('electron')
+console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+
+ipcRenderer.on('asynchronous-reply', (event, arg) => {
+  console.log(arg) // prints "pong"
+})
+ipcRenderer.send('asynchronous-message', 'ping')
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+to create buttons / elements
+  var btn = document.createElement("BUTTON"); // this creates the element 
+  btn.innerHTML = "CLICK ME"; // this give it its propertys
+  document.body.appendChild(btn); // this puts it on the page

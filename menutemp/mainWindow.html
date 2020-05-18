@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>test lines</title>
+</head>
+<body>
+    <h1>temp lines</h1>
+    <ul> </ul>
+
+    <script>
+        //set up and bring in
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        const ul = document.querySelector('ul');
+        // add item
+        ipcRenderer.on('item:add', function(e, item){
+            const li = document.createElement('li');
+            const itemText = document.createTextNode(item);
+            li.appendChild(itemText);
+            ul.appendChild(li);
+        });
+
+        //clear items
+        ipcRenderer.on('item:clear', function(){
+            console.log('testing');
+        ul.innerHTML = '';
+        });
+
+        //remove one item
+        ul.addEventListener('dblclick', removeItem);
+
+        function removeItem (e){
+           // console.log(e)
+            e.target.remove();
+        }
+    </script>
+</body>
+</html>

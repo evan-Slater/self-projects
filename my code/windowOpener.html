@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <body id="body">
+        <script>
+            /*
+                The point of this window is to be able to have multiple html files that i can open and work with
+                this is the hub for opening them easaly
+            */
+            const electron = require('electron');
+            const {ipcRenderer} = electron;
+            ipcRenderer.send('giveWin');
+
+            ipcRenderer.on("reseveWin",(event,wins)=>{
+                wins.forEach(element => {
+                    console.log(element);
+                    let button = document.createElement('button');
+                    button.setAttribute('onclick','openThis(id)');
+                    button.setAttribute('id',element);
+                    button.innerHTML = element;
+                    let body = document.getElementById('body');
+                    body.append(button);
+                });
+            });
+
+            function openThis(win){
+                ipcRenderer.send('openThis',win);
+                this.close();
+            }
+        </script>
+    </body>
+</html>

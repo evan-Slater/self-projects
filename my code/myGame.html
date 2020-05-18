@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    canvas {
+        border: 1px solid #d3d3d3;
+        background-color: #f1f1f1;
+    }
+</style>
+</head>
+<body onload="startGame()">
+<script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+//----------------------------------------------------------------------------------------------------------------
+//var counter = 0;
+    function startGame(){
+       //console.log(parseInt(0.9));
+        gameboard.start();
+        playerCharacter = new player('#000000',[[100,100],[100,50],[50,100]]);
+        wall = new objects('#FF0000',[[150,150],[150,250],[250,250],[250,150]]);
+        borders = new objects('#0000FF',[[0,0],[400,0],[400,400],[0,400],[0,0],[20,0],[20,380],[380,380],[380,20],[20,20]]);
+        // array of all the obstical you can run into 
+        let obsticals = [wall,borders];
+        borders.update();
+        playerCharacter.update();
+        wall.update();
+        setInterval(() => {
+            //counter ++;
+            gameboard.clear();
+            wall.patterns();
+            if(getDirection() == -1){
+                playerCharacter.speed = 0;
+            }else{
+                playerCharacter.speed = 1;
+            }
+            playerCharacter.moveAll(getDirection(),playerCharacter.speed);
+            //this is for collishion
+            obsticals.forEach(element => {
+                console.log("is collishion regestering");
+                if(playerCharacter.colishion(element)){
+                console.log("moving");
+                //console.log(playerCharacter);
+                playerCharacter.moveAll(getDirection(),-1*playerCharacter.speed);
+            }
+            });
+            playerCharacter.update();
+            
+        }, (1000/60));
+    }
+//-------------------------------------------------------------------------------------------------------------------------
+    //keypresses
+    // this is ment to drtect what keys are pressed and move acordingly
+    //                 d      s      a    w
+    var pressedKeys = [false,false,false,false];
+    // when key is pressed
+    window.addEventListener('keydown',function(e){
+        let key = (e.key).toLowerCase();
+        if(key == "w"){
+            pressedKeys[3] = true;
+        }
+        if(key == "a"){
+            pressedKeys[2] = true;
+        }
+        if(key == "s"){
+            pressedKeys[1] = true;
+        }
+        if(key == "d"){
+            pressedKeys[0] = true;            
+        }
+    });
+    //when key releesed
+    window.addEventListener('keyup',function(e){
+        //console.log(e);
+        let key = (e.key).toLowerCase();
+        if(key == "w"){
+            pressedKeys[3] = false;
+        }
+        if(key == "a"){
+            pressedKeys[2] = false;
+        }
+        if(key == "s"){          
+            pressedKeys[1] = false;
+        }
+        if(key == "d"){
+            pressedKeys[0] = false;            
+        }
+    });
+
+    //this will compile and return the direction that it will move in
+    function getDirection() {
+        if(pressedKeys[0] && pressedKeys[2]){
+            pressedKeys[0] = false;
+            pressedKeys[2] = false;
+        }
+        if(pressedKeys[1] && pressedKeys[3]){
+            pressedKeys[1] = false;
+            pressedKeys[3] = false;
+        }
+        if(pressedKeys[0] && pressedKeys[1]){
+            return Math.PI/4
+        }else if(pressedKeys[1] && pressedKeys[2]){
+            return Math.PI*3/4
+        }else if(pressedKeys[2] && pressedKeys[3]){
+            return Math.PI*5/4
+        }else if(pressedKeys[3] && pressedKeys[0]){
+            return Math.PI*7/4
+        }else if(pressedKeys[0]){
+            return Math.PI*2;
+        }else if(pressedKeys[1]){
+            return Math.PI/2;
+        }else if(pressedKeys[2]){
+            return Math.PI;
+        }else if(pressedKeys[3]){
+            return Math.PI*3/2;
+        }else{  
+            return -1;
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------
+    //canvase board
+    var gameboard = {
+        //creates the canvase    
+        canvas : document.createElement('canvas'),
+        //sets the propertys of the canvase
+        start : function(){
+            this.canvas.height = 400;
+            this.canvas.width = 400;
+            this.context = this.canvas.getContext('2d');
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            
+        },
+        //clear the canvase
+        clear : function () {
+            this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------
+    //objects in the game
+    function objects(color,points) {
+        this.points = points;
+        this.color = color;
+        this.pointCount = points.length;
+        this.patternInterval = 0;
+        //update the screen 
+        this.update = function(){
+            ctx = gameboard.context;
+            ctx.fillStyle = this.color;
+            //console.log(this.points);
+            polygon(ctx,this.points);
+        }
+        //collishion for a specific objects
+        this.colishion = function (objects) {
+            ctx = gameboard.context;
+            objects.update();
+            var target = false;
+            for(let i = 0; i<this.points.length;i++){
+                if(ctx.isPointInPath(this.points[i][0],this.points[i][1])){
+                    target = true;
+                }
+            }
+            console.log(target);
+            return target;
+        }
+        //move all the points in together
+        //give it the angle your want to move at in radians, then the distance from your current point
+        this.moveAll = function(direction,distance){
+            for (let i = 0; i < this.points.length; i++) {
+                this.points[i][0] += (Math.cos(direction))*distance;
+                this.points[i][1] += (Math.sin(direction))*distance;
+            }
+        }
+        //move only one of the points index starts at 0
+        //point you want to move, direction, distance
+        this.movePoint = function(point,direction,distance) {
+            if(point< this.pointCount){
+            this.points[point][0] += (Math.cos(direction))*distance;
+            this.points[point][1] += (Math.sin(direction))*distance;
+            }
+        }
+        
+        this.patterns = function(){
+            this.patternInterval ++;
+            if(this.patternInterval<100){
+                this.moveAll(0,1);
+            }else if(this.patternInterval<200){
+                this.moveAll(Math.PI/2,1);
+            }else if(this.patternInterval<300){
+                this.moveAll(Math.PI,1);
+            }else if(this.patternInterval<400){
+                this.moveAll(Math.PI*3/2,1);
+            }else if(this.patternInterval<500){
+            }else{
+                this.patternInterval = 0;
+            }
+        }
+
+    }
+//----------------------------------------------------------------------------------------------------------------
+    //the player class
+    function player(color,points) {
+        this.points = points;
+        this.color = color;
+        this.pointCount = points.length;
+        this.speed = 0;
+        //update the screen 
+        this.update = function(){
+            ctx = gameboard.context;
+            ctx.fillStyle = this.color;
+            //console.log(this.points);
+            polygon(ctx,this.points);
+        }
+        //collishion for a specific objects
+        this.colishion = function (objects) {
+            ctx = gameboard.context;
+            objects.update();
+            var target = false;
+            for(let i = 0; i<this.points.length;i+=2){
+                if(ctx.isPointInPath(this.points[i],this.points[i+1])){
+                    target = true;
+                }
+            }
+            return target;
+        }
+        //move all the points in together
+        //give it the angle your want to move at in radians, then the distance from your current point
+        this.moveAll = function(direction,distance){
+            for (let i = 0; i < this.points.length; i++) {
+                this.points[i][0] += (Math.cos(direction))*distance;
+                this.points[i][1] += (Math.sin(direction))*distance;
+            }
+        }
+        //move only one of the points index starts at 0
+        //point you want to move, direction, distance
+        this.movePoint = function(point,direction,distance) {
+            if(point< this.pointCount){
+            this.points[point][0] += (Math.cos(direction))*distance;
+            this.points[point][1] += (Math.sin(direction))*distance;
+            }
+        }
+         //this will set up key presses
+    } 
+
+//----------------------------------------------------------------------------------------------------------------
+    /*
+        param: context, array of x,y cawordenents [[x,y],[x,y]]
+    */
+    function polygon(ctx,points){
+        ctx.beginPath();
+        ctx.moveTo(points[0][0],points[0][1]);
+        for(let i = 1; i<points.length; i++){
+            ctx.lineTo(points[i][0],points[i][1]);
+        }

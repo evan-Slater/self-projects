@@ -1,0 +1,14 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "button users can set what they do",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^6.0.0"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "evan slater",
+  "license": "ISC"
+}

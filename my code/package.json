@@ -1,0 +1,14 @@
+{
+  "name": "my-code",
+  "version": "1.0.0",
+  "description": "seeing if i can get buttons to work how i want them to",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "evan slatet",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^6.0.0"
+  }
+}

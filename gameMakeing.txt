@@ -1,0 +1,30 @@
+html has a canves
+
+use isPointInPath
+trello
+
+canves 
+set up
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext('2d');
+
+ctx.beginPath();
+this starts a new set of points for a line
+
+ctx.moveTo(x,y);
+this will jump to a point but will not leave a line behind it
+
+ctx.lineTo(x,y);
+jumps to point leaving a line
+
+ctx.isPointInPath(x,y);
+returns true or false if point is inside of the area of lines
+
+ctx.stroke(); 
+draws in the lines but does not fill it in
+
+ctx.full();
+draws the lines in and fills the area
+
+ ctx.clearRect(0,0,canvas.height,canvas.width);
+ clear the board
