@@ -3,7 +3,7 @@ const url = require('url');
 const path = require('path');
 const { app, BrowserWindow, ipcMain } = electron;
 // inports from electron
-let winfiles = ["gameRefrence","canvesBaseTest","myGame"];
+let winfiles = ["gameRefrence","canvesBaseTest","myGame","objectCreation"];
 let win;
 let selector;
 function windowOpender(window,holder){

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;" onclick="drawdesighn(event)">
+    </canvas>
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        //console.log("hello did this load");
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext('2d');
+        
+        var points = [];
+        function drawdesighn(event){
+            points.push([event.layerX,event.layerY]);
+            //console.log(points);
+            ctx.clearRect(0,0,500,500);
+            polygon(ctx,points)
+        }
+        window.addEventListener('keypress',function(event){
+            editPoints(event);
+        });
+        function editPoints(event){
+            //console.log("pressed:" + event.key +":");
+            if(event.key == " "){
+                points.pop();
+                //console.log(points);
+            }else if(event.key == "a"){
+                console.log(points);
+            }
+            ctx.clearRect(0,0,500,500);
+            polygon(ctx,points)
+        }
+        function polygon(ctx,points){
+            ctx.beginPath();
+            ctx.moveTo(points[0][0],points[0][1]);
+            for(let i = 1; i<points.length; i++){
+                ctx.lineTo(points[i][0],points[i][1]);
+            }
+            ctx.fill();
+        }
+    </script>
+</body>
+</html>
