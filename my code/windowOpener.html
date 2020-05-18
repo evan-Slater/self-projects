@@ -15,8 +15,8 @@
                     console.log(element);
                     let button = document.createElement('button');
                     button.setAttribute('onclick','openThis(id)');
-                    button.setAttribute('id',element);
-                    button.innerHTML = element;
+                    button.setAttribute('id',element[0]);
+                    button.innerHTML = element[0] +'<br>'+ element[1] +'</br>';
                     let body = document.getElementById('body');
                     body.append(button);
                 });
