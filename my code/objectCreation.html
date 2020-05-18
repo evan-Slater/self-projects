@@ -11,6 +11,7 @@
         var ctx = canvas.getContext('2d');
         
         var points = [];
+        //tracks mouse presses
         function drawdesighn(event){
             points.push([event.layerX,event.layerY]);
             //console.log(points);
@@ -18,19 +19,28 @@
             polygon(ctx,points)
         }
         window.addEventListener('keypress',function(event){
-            editPoints(event);
+            smallEdits(event);
+            ctx.clearRect(0,0,500,500);
+            polygon(ctx,points);
         });
-        function editPoints(event){
-            //console.log("pressed:" + event.key +":");
+        function smallEdits(event){
+            //removes last point
             if(event.key == " "){
                 points.pop();
-                //console.log(points);
+            //prints out points
             }else if(event.key == "a"){
-                console.log(points);
+                let copyList = "[";
+                points.forEach(element => {
+                    copyList += "["+element+"],";
+                });
+                copyList = copyList.substring(0,copyList.length-1);
+                copyList+="]";
+                //console.log(points);
+                console.log(copyList);
             }
-            ctx.clearRect(0,0,500,500);
-            polygon(ctx,points)
         }
+
+        //draw the shape
         function polygon(ctx,points){
             ctx.beginPath();
             ctx.moveTo(points[0][0],points[0][1]);
