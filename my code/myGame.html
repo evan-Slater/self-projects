@@ -45,8 +45,9 @@
                     playerCharacter.moveAll(getDirection(),-1*playerCharacter.speed);
             }
             });
-            if(playerCharacter.colishion(coin)){
-                coin.moveAll(Math.PI*2*Math.random(),Math.random()*100);
+            coin.update();
+            if(coin.colishion(playerCharacter)){
+                randomMovment(coin,100);
             }
             playerCharacter.update();
             
@@ -258,6 +259,33 @@
         }
     }
 //----------------------------------------------------------------------------------------------------------------
+    function randomMovment(element,maxMove){
+        //set up to test move then un move if not valid
+        var timesDone = 0;
+        var direction;
+        var moveAmout;
+        var valid = false;
+        while (!valid && timesDone < 100){
+            timesDone++;
+            valid = true;
+            direction = Math.PI*2*Math.random();
+            moveAmout = Math.random()*maxMove;
+            element.moveAll(direction,moveAmout);
+            element.points.forEach(point => {
+                if(point[0] < 100 || point[1] < 100 || point[0]>300 || point[1] > 300){
+                    if(valid){
+                        element.moveAll(direction*Math.PI,-1*moveAmout);
+                        
+                    }
+                    
+                    valid = false;
+                    console.log("retrying");
+                }
+            });
+        }
+        console.log("moved");
+    }
+
 </script>
 </body>
 </html>
