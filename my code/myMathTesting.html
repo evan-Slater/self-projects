@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <ol id="steps">
+
+    </ol>
+    <button onclick="startTest()">Start test</button>
+    <script>
+        function startTest(){
+            for(var p = 1; p<=100;p++){
+                var x = 1;
+                var times = 0;
+                while(x<(1.8*Math.pow(10,308))){
+                    x = (x*(1-(p/100))) + (2*x *(p/100));
+                    times++;
+                }
+                addToList(times);
+            }
+        }
+        function addToList(toAdd){
+            let list = document.getElementById("steps");
+            let beingAdded = document.createElement("div");
+            beingAdded.innerHTML = toAdd;
+            list.appendChild(beingAdded);
+        }
+    </script>
+</body>
+</html>
