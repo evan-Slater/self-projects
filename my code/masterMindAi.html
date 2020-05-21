@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <button onclick="console.log(makeGuess())">enter buttons</button>
+    <script>
+        const buttonAmount = 4;
+        var previusGuesses = [];
+        function makeGuess(){
+            var guess = "";
+            for (let i = 0; i < buttonAmount; i++) {
+                guess += Math.round(Math.random() * 5) + ",";
+                //console.log();
+            }
+            for (let i = 0; i < previusGuesses.length; i++) {
+                if(previusGuesses[i] == guess){
+                    console.log("no");
+                    return makeGuess();
+                }
+            }
+            previusGuesses.push(guess);
+            return guess;
+        }
+    </script>
+</body>
+</html>

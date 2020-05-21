@@ -3,7 +3,7 @@ const url = require('url');
 const path = require('path');
 const { app, BrowserWindow, ipcMain } = electron;
 // inports from electron
-let winfiles = [["gameRefrence","a refrense window for games"],["canvesBaseTest","testing for new canvase things"],["myGame","this is the game"],["objectCreation","creating object point arrays"],["myMathTesting","this is me useing code to test math"]];
+let winfiles = [["gameRefrence","a refrense window for games"],["canvesBaseTest","testing for new canvase things"],["myGame","this is the game"],["objectCreation","creating object point arrays"],["myMathTesting","this is me useing code to test math"],["masterMindAi","trying to make an AI that can play and beat master mind"]];
 let win;
 let selector;
 function windowOpender(window,holder){
