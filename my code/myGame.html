@@ -19,7 +19,7 @@
         gameboard.start();
         playerCharacter = new player('#000000',[[100,100],[100,50],[50,50],[50,100]]);
         movingObst = new objects('#FF0000',[[92,92],[92,164],[164,164],[164,92]]);
-        borders = new objects('#0000FF',[[0,0],[400,0],[400,400],[0,400],[0,0],[20,0],[20,380],[380,380],[380,20],[20,20]]);
+        borders = new pages('#0000FF',[[[0,0],[400,0],[400,400],[0,400],[0,0],[20,0],[20,380],[380,380],[380,20],[20,20]]]);
         coin = new objects("#ffff00",[[179,118],[184,121],[188,129],[187,138],[181,144],[174,146],[164,145],[160,141],[156,134],[157,126],[162,120],[166,119]]);
         // array of all the obstical you can run into 
         let obsticals = [movingObst,borders];
@@ -136,48 +136,34 @@
 //----------------------------------------------------------------------------------------------------------------
     //the player class
     function player(color,points) {
-        this.points = points;
-        this.color = color;
-        this.pointCount = points.length;
+        this.pla = new objects(color,points);
         this.speed = 0;
-        //update the screen 
         this.update = function(){
-            ctx = gameboard.context;
-            ctx.fillStyle = this.color;
-            //console.log(this.points);
-            polygon(ctx,this.points);
+            this.pla.update();
         }
-        //collishion for a specific objects
         this.colishion = function (objects) {
-            ctx = gameboard.context;
-            objects.update();
-            var target = false;
-            for(let i = 0; i<this.points.length;i++){
-                if(ctx.isPointInPath(this.points[i][0],this.points[i][1])){
-                    target = true;
-                }
-            }
-            return target;
+            return this.pla.colishion(objects);
         }
-        //move all the points in together
-        //give it the angle your want to move at in radians, then the distance from your current point
         this.moveAll = function(direction,distance){
-            for (let i = 0; i < this.points.length; i++) {
-                this.points[i][0] += (Math.cos(direction))*distance;
-                this.points[i][1] += (Math.sin(direction))*distance;
-            }
+            this.pla.moveAll(direction,distance);
         }
-        //move only one of the points index starts at 0
-        //point you want to move, direction, distance
         this.movePoint = function(point,direction,distance) {
-            if(point< this.pointCount){
-            this.points[point][0] += (Math.cos(direction))*distance;
-            this.points[point][1] += (Math.sin(direction))*distance;
-            }
+            this.pla.movePoint(point,direction,distance);
         }
-         //this will set up key presses
+        //update the screen 
     } 
-
+//----------------------------------------------------------------------------------------------------------------
+function pages(color,points){
+    this.page = 0;
+    this.screen = [];
+    points.forEach(element => {
+        this.screen.push(new objects(color,element));
+    });
+    console.log(this.screen);
+    this.update = function(){
+        this.screen[this.page].update();
+    }
+}
 //----------------------------------------------------------------------------------------------------------------
     /*
         param: context, array of x,y cawordenents [[x,y],[x,y]]
@@ -265,23 +251,21 @@
         var direction;
         var moveAmout;
         var valid = false;
-        while (!valid && timesDone < 100){
+        while (!valid && timesDone < 1000){
             timesDone++;
             valid = true;
             direction = Math.PI*2*Math.random();
             moveAmout = Math.random()*maxMove;
             element.moveAll(direction,moveAmout);
             element.points.forEach(point => {
-                if(point[0] < 100 || point[1] < 100 || point[0]>300 || point[1] > 300){
-                    if(valid){
-                        element.moveAll(direction*Math.PI,-1*moveAmout);
-                        
-                    }
-                    
+                if(point[0] < 100 || point[1] < 100 || point[0]>300 || point[1] > 300){ 
                     valid = false;
-                    console.log("retrying");
                 }
             });
+            if(!valid){
+                element.moveAll(direction*Math.PI,-1*moveAmout);
+                console.log("retry");
+            }
         }
         console.log("moved");
     }

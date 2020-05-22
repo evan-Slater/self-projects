@@ -2,24 +2,37 @@
 <html>
 <body>
     <button onclick="console.log(makeGuess())">enter buttons</button>
+    <textarea id='corButtons'></textarea>
+    <textarea id='corSpot' onblur="getText(this)"></textarea>
     <script>
         const buttonAmount = 4;
         var previusGuesses = [];
+        var posButtonAmount = [4,4,4,4,4,4];
+        function prossesResolts(){
+            let corButtons = document.getElementById('corButtons').value;
+            let corSpot = document.getElementById('corSpot').value;
+            for(let i = 0; i<4;i++){
+                
+            }
+        }
         function makeGuess(){
-            var guess = "";
+            //console.log(JSON.stringify([0,0,0]) == JSON.stringify([0,1,0]));
+            var guess = [];
             for (let i = 0; i < buttonAmount; i++) {
-                guess += Math.round(Math.random() * 5) + ",";
+                guess.push( Math.round(Math.random() * 5));
                 //console.log();
             }
             for (let i = 0; i < previusGuesses.length; i++) {
-                if(previusGuesses[i] == guess){
-                    console.log("no");
+                if(JSON.stringify(previusGuesses[i]) == JSON.stringify(guess)){
+                    //console.log("no");
                     return makeGuess();
                 }
             }
             previusGuesses.push(guess);
+            //console.log(previusGuesses);
             return guess;
         }
+        
     </script>
 </body>
 </html>
